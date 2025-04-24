@@ -3,7 +3,7 @@ using System.Net;
 
 namespace NetworkValidation.Models
 {
-    public class TracertResultModel
+    public class TracetrResultModel
     {
         public int Hop { get; set; }
         public string HostName { get; set; }
@@ -13,7 +13,7 @@ namespace NetworkValidation.Models
         public bool IsSuccess { get; set; }
         public string ErrorMessage { get; set; }
 
-        public TracertResultModel(int hop, string hostName, IPAddress ipAddress, TimeSpan responseTime, bool isSuccess, string errorMessage = null)
+        public TracetrResultModel(int hop, string hostName, IPAddress ipAddress, TimeSpan responseTime, bool isSuccess, string errorMessage = null)
         {
             Hop = hop;
             HostName = hostName;

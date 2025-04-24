@@ -14,19 +14,19 @@ namespace NetworkValidation
     public partial class MainWindow : Window
     {
         private readonly INetworkValidationService _validationService;
-        private readonly ITracertService _tracertService;
+        private readonly ITracetrService _tracetrService;
         private readonly ObservableCollection<ValidationResultModel> _validationResults;
-        private readonly ObservableCollection<TracertResultModel> _tracertResults;
+        private readonly ObservableCollection<TracetrResultModel> _tracetrResults;
 
         public MainWindow()
         {
             InitializeComponent();
             _validationService = new NetworkValidationService();
-            _tracertService = new TracertService();
+            _tracetrService = new TracetrService();
             _validationResults = new ObservableCollection<ValidationResultModel>();
-            _tracertResults = new ObservableCollection<TracertResultModel>();
+            _tracetrResults = new ObservableCollection<TracetrResultModel>();
             ResultsList.ItemsSource = _validationResults;
-            TracertResultsList.ItemsSource = _tracertResults;
+            TracetrResultsList.ItemsSource = _tracetrResults;
 
 #if DEBUG
             // 디버그 모드에서만 기본값 설정
@@ -85,46 +85,42 @@ namespace NetworkValidation
             }
         }
 
-        private async void TracertButton_Click(object sender, RoutedEventArgs e)
+        private async void TracetrButton_Click(object sender, RoutedEventArgs e)
         {
-            string input = IpAddressTextBox.Text.Trim();
-
-            string host;
-            // URL 파싱 시도
-            var (parsedHost, _) = UrlParser.ParseUrl(input);
-            if (parsedHost != null)
+            var host = IpAddressTextBox.Text.Trim();
+            if (string.IsNullOrEmpty(host))
             {
-                host = parsedHost;
-            }
-            else
-            {
-                // IP 주소 검증
-                if (!System.Net.IPAddress.TryParse(input, out System.Net.IPAddress parsedIp))
-                {
-                    AddResult(false, "Invalid IP Address or URL format", TimeSpan.Zero);
-                    return;
-                }
-                host = input;
+                MessageBox.Show("Please enter a host address");
+                return;
             }
 
-            // 버튼 비활성화
-            TracertButton.IsEnabled = false;
-            TracertButton.Content = "Tracing...";
-            _tracertResults.Clear();
+            if (!int.TryParse(TimeoutTextBox.Text, out int timeout) || timeout <= 0)
+            {
+                MessageBox.Show("Please enter a valid timeout value (greater than 0)");
+                return;
+            }
+
+            TracetrButton.IsEnabled = false;
+            TracetrButton.Content = "Tracing...";
+            _tracetrResults.Clear();
+
+            var progress = new Progress<TracetrResultModel>(result =>
+            {
+                _tracetrResults.Add(result);
+            });
 
             try
             {
-                var results = await _tracertService.TraceRouteAsync(host);
-                foreach (var result in results)
-                {
-                    _tracertResults.Add(result);
-                }
+                await _tracetrService.TraceRouteAsync(host, 30, timeout, progress);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error: {ex.Message}");
             }
             finally
             {
-                // 버튼 상태 복원
-                TracertButton.IsEnabled = true;
-                TracertButton.Content = "Tracert";
+                TracetrButton.IsEnabled = true;
+                TracetrButton.Content = "Tracetr";
             }
         }
 

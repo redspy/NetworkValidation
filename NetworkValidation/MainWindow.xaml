@@ -20,12 +20,15 @@
             <TextBox x:Name="IpAddressTextBox" Margin="0,0,0,10"/>
             
             <TextBlock Text="Port Number:" Margin="0,0,0,5"/>
-            <TextBox x:Name="PortTextBox" Margin="0,0,0,20"/>
+            <TextBox x:Name="PortTextBox" Margin="0,0,0,10"/>
+            
+            <TextBlock Text="Timeout (ms):" Margin="0,0,0,5"/>
+            <TextBox x:Name="TimeoutTextBox" Text="10000" Margin="0,0,0,20"/>
             
             <StackPanel Orientation="Horizontal">
                 <Button x:Name="ValidateButton" Content="Validate" Click="ValidateButton_Click" 
                         Width="100" Height="30" Margin="0,0,10,0"/>
-                <Button x:Name="TracertButton" Content="Tracert" Click="TracertButton_Click"
+                <Button x:Name="TracetrButton" Content="Tracetr" Click="TracetrButton_Click"
                         Width="100" Height="30"/>
             </StackPanel>
         </StackPanel>
@@ -56,37 +59,36 @@
                         </ItemsControl>
                     </ScrollViewer>
                 </TabItem>
-                <TabItem Header="Tracert Results">
-                    <ScrollViewer VerticalScrollBarVisibility="Auto">
-                        <ItemsControl x:Name="TracertResultsList">
-                            <ItemsControl.ItemTemplate>
-                                <DataTemplate>
-                                    <Border BorderBrush="LightGray" BorderThickness="1" Margin="0,0,0,5" Padding="10">
-                                        <StackPanel>
-                                            <TextBlock>
-                                                <Run Text="Hop:" FontWeight="Bold"/>
-                                                <Run Text="{Binding Hop}"/>
-                                            </TextBlock>
-                                            <TextBlock>
-                                                <Run Text="Host:" FontWeight="Bold"/>
-                                                <Run Text="{Binding HostName}"/>
-                                            </TextBlock>
-                                            <TextBlock>
-                                                <Run Text="IP:" FontWeight="Bold"/>
-                                                <Run Text="{Binding IPAddress}"/>
-                                            </TextBlock>
-                                            <TextBlock>
-                                                <Run Text="Time:" FontWeight="Bold"/>
-                                                <Run Text="{Binding FormattedResponseTime}"/>
-                                            </TextBlock>
-                                            <TextBlock Foreground="Red" Text="{Binding ErrorMessage}" 
-                                                     Visibility="{Binding IsSuccess, Converter={StaticResource BooleanToVisibilityConverter}}"/>
-                                        </StackPanel>
-                                    </Border>
-                                </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                        </ItemsControl>
-                    </ScrollViewer>
+                <TabItem Header="Tracetr Results">
+                    <ListView x:Name="TracetrResultsList" Margin="10">
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Margin="0,5">
+                                    <TextBlock>
+                                        <Run Text="Hop:" FontWeight="Bold"/>
+                                        <Run Text="{Binding Hop}"/>
+                                    </TextBlock>
+                                    <TextBlock>
+                                        <Run Text="Host:" FontWeight="Bold"/>
+                                        <Run Text="{Binding HostName}"/>
+                                    </TextBlock>
+                                    <TextBlock>
+                                        <Run Text="IP:" FontWeight="Bold"/>
+                                        <Run Text="{Binding FormattedIPAddress}"/>
+                                    </TextBlock>
+                                    <TextBlock>
+                                        <Run Text="Time:" FontWeight="Bold"/>
+                                        <Run Text="{Binding FormattedResponseTime}"/>
+                                    </TextBlock>
+                                    <TextBlock Text="{Binding ErrorMessage}" 
+                                             Foreground="Red"
+                                             TextWrapping="Wrap"
+                                             Margin="0,5,0,0"
+                                             Visibility="{Binding IsSuccess, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                                </StackPanel>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
                 </TabItem>
             </TabControl>
         </Grid>
