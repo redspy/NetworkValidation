@@ -102,9 +102,13 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Compile Include="Models\TracertResultModel.cs" />
     <Compile Include="Models\ValidationResultModel.cs" />
+    <Compile Include="Services\ITracertService.cs" />
+    <Compile Include="Services\TracertService.cs" />
     <Compile Include="Services\INetworkValidationService.cs" />
     <Compile Include="Services\NetworkValidationService.cs" />
+    <Compile Include="Utils\UrlParser.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>

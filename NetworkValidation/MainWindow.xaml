@@ -5,7 +5,10 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:NetworkValidation"
         mc:Ignorable="d"
-        Title="Network Validation" Height="450" Width="800">
+        Title="Network Validation" Height="600" Width="1000">
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+    </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -13,14 +16,18 @@
         </Grid.RowDefinitions>
         
         <StackPanel Grid.Row="0" Margin="20">
-            <TextBlock Text="IP Address:" Margin="0,0,0,5"/>
+            <TextBlock Text="IP Address or URL:" Margin="0,0,0,5"/>
             <TextBox x:Name="IpAddressTextBox" Margin="0,0,0,10"/>
             
             <TextBlock Text="Port Number:" Margin="0,0,0,5"/>
             <TextBox x:Name="PortTextBox" Margin="0,0,0,20"/>
             
-            <Button x:Name="ValidateButton" Content="Validate" Click="ValidateButton_Click" 
-                    Width="100" Height="30" HorizontalAlignment="Left"/>
+            <StackPanel Orientation="Horizontal">
+                <Button x:Name="ValidateButton" Content="Validate" Click="ValidateButton_Click" 
+                        Width="100" Height="30" Margin="0,0,10,0"/>
+                <Button x:Name="TracertButton" Content="Tracert" Click="TracertButton_Click"
+                        Width="100" Height="30"/>
+            </StackPanel>
         </StackPanel>
 
         <Grid Grid.Row="1" Margin="20,0,20,20">
@@ -29,23 +36,59 @@
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
             
-            <TextBlock Text="Validation Results" FontSize="16" FontWeight="Bold" Margin="0,0,0,10"/>
+            <TextBlock Text="Results" FontSize="16" FontWeight="Bold" Margin="0,0,0,10"/>
             
-            <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
-                <ItemsControl x:Name="ResultsList">
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-                            <Border BorderBrush="LightGray" BorderThickness="1" Margin="0,0,0,5" Padding="10">
-                                <StackPanel>
-                                    <TextBlock Text="{Binding Timestamp}" FontStyle="Italic" Foreground="Gray"/>
-                                    <TextBlock Text="{Binding Message}" Margin="0,5,0,0"/>
-                                    <TextBlock Text="{Binding ResponseTime}" Foreground="Blue" Margin="0,5,0,0"/>
-                                </StackPanel>
-                            </Border>
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
-            </ScrollViewer>
+            <TabControl Grid.Row="1">
+                <TabItem Header="Validation Results">
+                    <ScrollViewer VerticalScrollBarVisibility="Auto">
+                        <ItemsControl x:Name="ResultsList">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Border BorderBrush="LightGray" BorderThickness="1" Margin="0,0,0,5" Padding="10">
+                                        <StackPanel>
+                                            <TextBlock Text="{Binding Timestamp}" FontStyle="Italic" Foreground="Gray"/>
+                                            <TextBlock Text="{Binding Message}" Margin="0,5,0,0"/>
+                                            <TextBlock Text="{Binding ResponseTime}" Foreground="Blue" Margin="0,5,0,0"/>
+                                        </StackPanel>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </ScrollViewer>
+                </TabItem>
+                <TabItem Header="Tracert Results">
+                    <ScrollViewer VerticalScrollBarVisibility="Auto">
+                        <ItemsControl x:Name="TracertResultsList">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Border BorderBrush="LightGray" BorderThickness="1" Margin="0,0,0,5" Padding="10">
+                                        <StackPanel>
+                                            <TextBlock>
+                                                <Run Text="Hop:" FontWeight="Bold"/>
+                                                <Run Text="{Binding Hop}"/>
+                                            </TextBlock>
+                                            <TextBlock>
+                                                <Run Text="Host:" FontWeight="Bold"/>
+                                                <Run Text="{Binding HostName}"/>
+                                            </TextBlock>
+                                            <TextBlock>
+                                                <Run Text="IP:" FontWeight="Bold"/>
+                                                <Run Text="{Binding IPAddress}"/>
+                                            </TextBlock>
+                                            <TextBlock>
+                                                <Run Text="Time:" FontWeight="Bold"/>
+                                                <Run Text="{Binding FormattedResponseTime}"/>
+                                            </TextBlock>
+                                            <TextBlock Foreground="Red" Text="{Binding ErrorMessage}" 
+                                                     Visibility="{Binding IsSuccess, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                                        </StackPanel>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </ScrollViewer>
+                </TabItem>
+            </TabControl>
         </Grid>
     </Grid>
 </Window>
