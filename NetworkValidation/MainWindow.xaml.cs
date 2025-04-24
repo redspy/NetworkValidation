@@ -15,18 +15,23 @@ namespace NetworkValidation
     {
         private readonly INetworkValidationService _validationService;
         private readonly ITracetrService _tracetrService;
+        private readonly INetworkStatusService _networkStatusService;
         private readonly ObservableCollection<ValidationResultModel> _validationResults;
         private readonly ObservableCollection<TracetrResultModel> _tracetrResults;
+        private readonly ObservableCollection<NetworkStatusModel> _networkStatusResults;
 
         public MainWindow()
         {
             InitializeComponent();
             _validationService = new NetworkValidationService();
             _tracetrService = new TracetrService();
+            _networkStatusService = new NetworkStatusService();
             _validationResults = new ObservableCollection<ValidationResultModel>();
             _tracetrResults = new ObservableCollection<TracetrResultModel>();
+            _networkStatusResults = new ObservableCollection<NetworkStatusModel>();
             ResultsList.ItemsSource = _validationResults;
             TracetrResultsList.ItemsSource = _tracetrResults;
+            NetworkStatusList.ItemsSource = _networkStatusResults;
 
 #if DEBUG
             // 디버그 모드에서만 기본값 설정
@@ -121,6 +126,31 @@ namespace NetworkValidation
             {
                 TracetrButton.IsEnabled = true;
                 TracetrButton.Content = "Tracetr";
+            }
+        }
+
+        private async void NetworkStatusButton_Click(object sender, RoutedEventArgs e)
+        {
+            NetworkStatusButton.IsEnabled = false;
+            NetworkStatusButton.Content = "Loading...";
+            _networkStatusResults.Clear();
+
+            try
+            {
+                var results = await _networkStatusService.GetNetworkStatusAsync();
+                foreach (var result in results)
+                {
+                    _networkStatusResults.Add(result);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error getting network status: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            finally
+            {
+                NetworkStatusButton.IsEnabled = true;
+                NetworkStatusButton.Content = "Network Status";
             }
         }
 

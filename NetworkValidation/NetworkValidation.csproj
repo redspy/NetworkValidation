@@ -102,9 +102,13 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Compile Include="Converters\StringToVisibilityConverter.cs" />
+    <Compile Include="Models\NetworkStatusModel.cs" />
     <Compile Include="Models\TracetrResultModel.cs" />
     <Compile Include="Models\ValidationResultModel.cs" />
+    <Compile Include="Services\INetworkStatusService.cs" />
     <Compile Include="Services\ITracetrService.cs" />
+    <Compile Include="Services\NetworkStatusService.cs" />
     <Compile Include="Services\TracetrService.cs" />
     <Compile Include="Services\INetworkValidationService.cs" />
     <Compile Include="Services\NetworkValidationService.cs" />
